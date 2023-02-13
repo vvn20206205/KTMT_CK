@@ -1,55 +1,49 @@
-//   chuyển đổi văn bản thành ADN và ngược lại 
-
-// Gửi tin nhắn tới ADN:
-// Hàm convertTextToADN lấy một chuỗi văn bản làm đầu vào.
-// Đầu tiên, nó chuyển đổi văn bản thành biểu diễn nhị phân, tức là, một chuỗi các số 0 và 1.
-// Biểu diễn nhị phân sau đó được chuyển đổi thành một hệ gồm 4 chữ số, trong đó mỗi chữ số có thể là một trong 0, 1, 2 hoặc 3.
-// Cuối cùng, biểu diễn 4 chữ số được chuyển đổi thành ADN, trong đó 0 trở thành A, 1 trở thành T, 2 trở thành G và 3 trở thành C.
-// Chuỗi ADN cuối cùng được trả về làm đầu ra.
-// ADN thành văn bản:
-// Hàm convertADNtoText lấy chuỗi ADN làm đầu vào.
-// Đầu tiên, nó chuyển đổi ADN thành một hệ thống gồm 4 chữ số, trong đó mỗi chữ số có thể là một trong số 0, 1, 2 hoặc 3.
-// Biểu diễn 4 chữ số sau đó được chuyển đổi thành biểu diễn nhị phân, tức là, một chuỗi các số 0 và 1.
-// Cuối cùng, biểu diễn nhị phân được chuyển đổi thành văn bản bằng cách sử dụng mã ký tự của mỗi chuỗi nhị phân.
-// Chuỗi văn bản cuối cùng được trả về dưới dạng đầu ra.
-// Ngoài ra, mã sử dụng các biến OUTPUT1, OUTPUT2, OUTPUT3 và OUTPUT4 để hiển thị kết quả của từng bước trong tài liệu HTML, nhưng sẽ rõ ràng hơn nếu bạn cũng đăng mã HTML có liên quan cho việc này.
+const INPUT = document.getElementById("INPUT");
+const OUTPUT0 = document.getElementById("OUTPUT0");
 const OUTPUT1 = document.getElementById("OUTPUT1");
 const OUTPUT2 = document.getElementById("OUTPUT2");
 const OUTPUT3 = document.getElementById("OUTPUT3");
-const OUTPUT4 = document.getElementById("OUTPUT4");
-
-// ! Hàm coppy nội dung output
-function CopyOutput() {
- alert(  OUTPUT4.innerText);
-}
-
-function CoppyInput(id) {
-    const sequence = document.getElementById(`seq${id}`).innerText;
-    PLAYER_INPUT.value = sequence;
-}
-function remove_the_last_space(space) {
-    // bỏ space cuối cùng 
+function LoaiBoSpaceCuoiCung(space) {
     return space.replace(/\s+$/, '');
 }
-function convertTextToADN(text) {
-    OUTPUT1.textContent=("Văn bản: " + `${text}`);
- 
-    // Bước 1: Chuyển đổi văn bản thành (0,1)
+function Input1() {
+    INPUT.value = 'Ví dụ về ADN mã hóa dữ liệu và lưu trữ văn bản';
+    ThayDoiRadioButton("CHUYEN_VAN_BAN_THANH_ADN");
+
+}
+function Input2() {
+    INPUT.value = 'TAGA TGTT TGCA TGCA TGCC AGAA TTTC TGCC TCAG TGCA TGTA';
+    ThayDoiRadioButton("CHUYEN_ADN_THANH_VAN_BAN");
+}
+function ThayDoiRadioButton(value) {
+    var radioButtons = document.getElementsByName("CHUC_NANG");
+    for (var i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].value == value) {
+            radioButtons[i].checked = true;
+            break;
+        }
+    }
+}
+// ! ADN mã hóa, lưu trữ văn bản
+// ! ==================================================================
+// ! ==================================================================
+// ! ==================================================================
+// ! Chuyển văn bản thành ADN
+function ChuyenVanBanThanhADN(text) {
+    OUTPUT0.textContent = ("Bước 0: " + `${text}`);
+
+    // ! Bước 1: Chuyển đổi văn bản thành hệ cơ số 2 (gồm 0,1) như cách hiểu của 1 máy tính thông thường
     let binary = "";
     for (let i = 0; i < text.length; i++) {
         let charCode = text.charCodeAt(i);
         let _binary = charCode.toString(2);
-        // Thêm 0 để đảm bảo có 8 bit
         _binary = _binary.padStart(8, "0");
         binary += _binary + " ";
     }
-    binary = remove_the_last_space(binary);
-    OUTPUT2.textContent=("Nhị phân: " + `${binary}`);
+    binary = LoaiBoSpaceCuoiCung(binary);
+    OUTPUT1.textContent = ("Bước 1: " + `${binary}`);
 
-
-
-    // Hệ thống số cơ số 4, còn được gọi là quater-nybble hoặc nibble
-    // Bước 2: Chuyển đổi (0,1) thành (0,1,2,3)
+    // ! Bước 2: Chuyển đổi hệ cơ số 2 (gồm 0,1) thành hệ cơ số 4 (gồm 0,1,2,3)
     let base4 = '';
     Loop = binary.split(" ");
     Loop.forEach(element => {
@@ -72,12 +66,10 @@ function convertTextToADN(text) {
         }
         base4 = base4 + " ";
     });
-    base4 = remove_the_last_space(base4);
-    OUTPUT3.textContent=("4 phân: " + `${base4}`);
+    base4 = LoaiBoSpaceCuoiCung(base4);
+    OUTPUT2.textContent = ("Bước 2: " + `${base4}`);
 
-
-
-    // Bước 3: Chuyển đổi (0,1,2,3) thành ADN 
+    // ! Bước 3: Chuyển đổi hệ cơ số 4 (gồm 0,1,2,3) thành ADN (gồm A,T,G,C)
     ADN = base4.replace(/([0-3])/g, (match) => {
         switch (match) {
             case "0":
@@ -90,15 +82,14 @@ function convertTextToADN(text) {
                 return "C";
         }
     });
-    OUTPUT4.textContent=("ADN: " + `${ADN}`);
-    return ADN;
+    OUTPUT3.textContent = ("Bước 3: " + `${ADN}`);
 }
-function convertADNtoText(ADN) {
-    console.log("ADN: " + `${ADN}`);
+// ! ==================================================================
+// ! Chuyển ADN thành văn bản
+function ChuyenADNThanhVanBan(ADN) {
+    OUTPUT0.textContent = ("Bước 0: " + `${ADN}`);
 
-
-
-    // Bước 1: Chuyển đổi ADN thành (0,1,2,3)
+    // ! Bước 1: Chuyển đổi ADN (gồm A,T,G,C) thành hệ cơ số 4 (gồm 0,1,2,3) 
     let base4 = ADN.replace(/([A-Z])/g, (match) => {
         switch (match) {
             case "A":
@@ -112,10 +103,9 @@ function convertADNtoText(ADN) {
         }
     });
 
-    console.log("4 phân: " + `${base4}`);
+    OUTPUT1.textContent = ("Bước 1: " + `${base4}`);
 
-
-    // Bước 2: Chuyển đổi 4 bit (0,1,2,3) thành (0,1) 
+    // ! Bước 2: Chuyển đổi hệ cơ số 4 (gồm 0,1,2,3) thành hệ cơ số 2 (gồm 0,1) 
     let binary = '';
     Loop = base4.split(" ");
     Loop.forEach(element => {
@@ -138,47 +128,34 @@ function convertADNtoText(ADN) {
         }
         binary = binary + " ";
     });
-    binary = remove_the_last_space(binary);
-    console.log("Nhị phân: " + `${binary}`);
+    binary = LoaiBoSpaceCuoiCung(binary);
+    OUTPUT2.textContent = ("Bước 2: " + `${binary}`);
 
-
-
-    // Bước 3: Chuyển đổi (0,1) thành văn bản 
+    // ! Bước 3: Chuyển đổi hệ cơ số 2 (gồm 0,1) thành văn bản
     let text = "";
     Loop = binary.split(" ");
     Loop.forEach(element => {
         Loop = String.fromCharCode(parseInt(element, 2));
         text += (Loop);
     });
-    console.log("Văn bản: " + `${text}`);
-    return text;
+    OUTPUT3.textContent = ("Bước 3: " + `${text}`);
 }
 
-// ! hàm Main xử lí của chương trình
+// ! hàm Main của chương trình
 function Main() {
     try {
-        // * lấy input 
-        var GiaTriInput = document.getElementById("INPUT").value;
+        // ! lấy input 
+        var GiaTriInput = INPUT.value;
         var ChucNang = document.querySelector('input[name="CHUC_NANG"]:checked').value;
 
-        // * Tùy theo lựa chọn của người dùng mà dùng 1 trong 2 hàm
-        // * hàm có chức năng chuyển văn bản thành ADN
-        // * hàm có chức năng chuyển ADN thành văn bản
+        // ! Theo lựa chọn của người dùng 
         if (ChucNang == "CHUYEN_ADN_THANH_VAN_BAN") {
-            // document.getElementById("OUTPUT").innerHTML = ChuyenADNThanhVanBan(GiaTriInput);
-            convertADNtoText(GiaTriInput);    
-            return;
+            ChuyenADNThanhVanBan(GiaTriInput);
         }
-        
         if (ChucNang == "CHUYEN_VAN_BAN_THANH_ADN") {
-// document.getElementById("OUTPUT").innerHTML = ChuyenVanBanThanhADN(GiaTriInput);
-            convertTextToADN(GiaTriInput); 
-            return;
+            ChuyenVanBanThanhADN(GiaTriInput);
         }
     } catch (error) {
-        
-        document.getElementById("OUTPUT1").innerHTML = error.message;
+        document.getElementById("OUTPUT0").innerHTML = error.message;
     }
 } 
-// cơ số 4
-// cơ số 2 

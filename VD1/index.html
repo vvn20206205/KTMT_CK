@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -17,12 +18,13 @@
         <h1>Ví dụ: ADN mã hóa, lưu trữ văn bản</h1>
         <form class="bg-light p-4 m-4">
             <div class="form-group">
-                <h6>Ví dụ:</h6>
-                <button type="button" class="btn btn-outline-primary"
-                    onclick="document.getElementById('INPUT').value = 'Example of ADN that encodes data and stores text'">Example
-                    of ADN that encodes data and stores text</button>
-                <button type="button" class="btn btn-outline-success"
-                    onclick="document.getElementById('INPUT').value = 'GGCACGTTTTTTTGACCGCGGTGATGCTTTACT'">GGCACGTTTTTTTGACCGCGGTGATGCTTTACT</button>
+                <h6>Gợi ý input:</h6>
+                <button type="button" class="btn btn-outline-primary" onclick="Input1()">
+                    Ví dụ về ADN mã hóa dữ liệu và lưu trữ văn bản
+                </button>
+                <button type="button" class="btn btn-outline-success" onclick="Input2()">
+                    TAGA TGTT TGCA TGCA TGCC AGAA TTTC TGCC TCAG TGCA TGTA
+                </button>
             </div>
             <div class="form-check">
                 <label class="form-check-label" for="radio1">
@@ -35,47 +37,28 @@
                     <input type="radio" class="form-check-input" id="radio2" name="CHUC_NANG"
                         value="CHUYEN_ADN_THANH_VAN_BAN">Chuyển ADN thành văn bản
                 </label>
-            </div><br>
+            </div>
+            <br>
             <div class="form-group">
                 <div class="input-group ">
                     <input type="text" id="INPUT" class="form-control" placeholder="Nhập nội dung">
-                    <button type="button" class="btn btn-outline-warning" onclick="Main()">Submit</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="Main()">Chuyển đổi</button>
                 </div>
             </div>
         </form>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="container">
         <form class="bg-light p-4 m-4">
-
+            <div id="OUTPUT0">Bước 0: </div>
+            <br>
             <div id="OUTPUT1">Bước 1: </div>
             <br>
             <div id="OUTPUT2">Bước 2: </div>
             <br>
             <div id="OUTPUT3">Bước 3: </div>
-            <br>
-            <div id="OUTPUT4">Bước 4: </div>
-            <br>
-            <button type="button" class="btn btn-outline-success" onclick="CopyOutput()">Copy</button>
         </form>
-
-
     </div>
     <script src="script.js"></script>
-    
 </body>
 
 </html>

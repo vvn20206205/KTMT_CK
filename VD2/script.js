@@ -1,4 +1,18 @@
-const DNA_SEQUENCES = {
+function CoppyInput(id) {
+    const sequence = document.getElementById(`seq${id}`).innerText;
+    PLAYER_INPUT.value = sequence;
+}
+const LIST_HINH_VUONG = document.querySelectorAll(".hinhvuong");
+const PLAYER_INPUT = document.querySelector("#player-input");
+const KET_THUC = document.querySelector("#ketthuc");
+const SUBMIT_BUTTON = document.querySelector("#submit-button");
+let LuotChoi = 0.5;
+// ! Tic Tac Toe
+// ! ==================================================================
+// ! ==================================================================
+// ! ==================================================================
+// ! Các đầu vào input như các nhà khoa học đề xuất
+const INPUT_ADN = {
     11: "AACGACTGCACCACG",
     12: "CTCTCCCTGTACCCA",
     13: "ACCCCTCTCGCTCTT",
@@ -32,48 +46,12 @@ const DNA_SEQUENCES = {
     93: "CAGAGCTATACGGAG",
     94: "GCTACTCTGGGTGCT"
 };
-const LIST_HINH_VUONG = document.querySelectorAll(".hinhvuong");
-const PLAYER_INPUT = document.querySelector("#player-input");
-const KET_THUC = document.querySelector("#ketthuc");
-const SUBMIT_BUTTON = document.querySelector("#submit-button");
+// ! Trạng thái bàn cờ ban đầu là AAAAAAAAAAAAAAA
+// ! máy tính đi trước ở giữa là TTTTTTTTTTTTTTT
 let TrangThaiBanCo = ["AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA", "TTTTTTTTTTTTTTT", "AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAA"];
-let LuotChoi = 0.5;
+// ! Hàm in bàn cờ
+// ! in số lượt và kí tự X, O 
 InBanCo();
-function CoppyInput(id) {
-    const sequence = document.getElementById(`seq${id}`).innerText;
-    PLAYER_INPUT.value = sequence;
-}
-SUBMIT_BUTTON.addEventListener("click", function () {
-    LuotCuaNguoi(PLAYER_INPUT.value);
-    InBanCo();
-    PLAYER_INPUT.value = '';
-    LuotCuaAI();
-    InBanCo();
-    if (KiemTraBanCoKetThuc()) {
-        setTimeout(function () {
-            KET_THUC.textContent = ("=> Kết thúc!");
-        }, 200);
-    }
-});
-
-function KiemTraBanCoKetThuc() {
-    if (LuotChoi === 5) {
-        SUBMIT_BUTTON.style.pointerEvents = "none";
-        return true;
-    }
-    if ((LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[1].textContent && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[1].textContent) ||
-        (LIST_HINH_VUONG[3].textContent != " " && LIST_HINH_VUONG[3].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[5].textContent === LIST_HINH_VUONG[3].textContent) ||
-        (LIST_HINH_VUONG[6].textContent != " " && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[7].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[6].textContent) ||
-        (LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[3].textContent && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[0].textContent) ||
-        (LIST_HINH_VUONG[1].textContent != " " && LIST_HINH_VUONG[1].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[7].textContent === LIST_HINH_VUONG[1].textContent) ||
-        (LIST_HINH_VUONG[2].textContent != " " && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[5].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[2].textContent) ||
-        (LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[0].textContent) ||
-        (LIST_HINH_VUONG[2].textContent != " " && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[2].textContent)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 function InBanCo() {
     LuotChoi += 0.5;
     KET_THUC.textContent = "Lượt: " + LuotChoi;
@@ -87,36 +65,6 @@ function InBanCo() {
             LIST_HINH_VUONG[i].textContent = "O";
         }
     }
-}
-function LuotCuaNguoi(a) {
-    let b = LayKey(a);
-    TrangThaiBanCo[Math.floor(b / 10) - 1] = a;
-}
-function LayKey(a) {
-    for (var key in DNA_SEQUENCES) {
-        if (DNA_SEQUENCES[key] === a) {
-            return key;
-        }
-    }
-}
-function LuotCuaAI() {
-    check1();
-    check2();
-    check3();
-    check4();
-    check6();
-    check7();
-    check8();
-    check9();
-}
-function DiChuyenBuocDiCuaAI(a) {
-    TrangThaiBanCo[a - 1] = "TTTTTTTTTTTTTTT";
-}
-function KiemTraGiaTriTonTaiDNABanCo(value) {
-    return TrangThaiBanCo.indexOf(value) !== -1;
-}
-function KiemTraGiaTriTrongBanCo(value) {
-    return (TrangThaiBanCo[value - 1] != "AAAAAAAAAAAAAAA");
 }
 function UpdateButtons() {
     for (let j = 1; j <= 9; j++) {
@@ -135,43 +83,110 @@ function UpdateButtons() {
         }
     }
 }
+// ! Nhận input của người chơi và tính toán
+SUBMIT_BUTTON.addEventListener("click", function () {
+    // ! Lượt của người chơi 
+    LuotCuaNguoi(PLAYER_INPUT.value);
+    InBanCo();
+    PLAYER_INPUT.value = '';
+    // ! Lượt của AI
+    LuotCuaAI();
+    InBanCo();
+    if (KiemTraBanCoKetThuc()) {
+        setTimeout(function () {
+            KET_THUC.textContent = ("=> Kết thúc!");
+        }, 200);
+    }
+});
+
+function LuotCuaNguoi(a) {
+    let b = LayKeyInputADN(a);
+    TrangThaiBanCo[Math.floor(b / 10) - 1] = a;
+}
+function LayKeyInputADN(a) {
+    for (var key in INPUT_ADN) {
+        if (INPUT_ADN[key] === a) {
+            return key;
+        }
+    }
+}
+// ! Kiểm tra bàn cờ kết thúc
+function KiemTraBanCoKetThuc() {
+    if (LuotChoi === 5) {
+        SUBMIT_BUTTON.style.pointerEvents = "none";
+        return true;
+    }
+    if ((LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[1].textContent && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[1].textContent) ||
+        (LIST_HINH_VUONG[3].textContent != " " && LIST_HINH_VUONG[3].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[5].textContent === LIST_HINH_VUONG[3].textContent) ||
+        (LIST_HINH_VUONG[6].textContent != " " && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[7].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[6].textContent) ||
+        (LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[3].textContent && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[0].textContent) ||
+        (LIST_HINH_VUONG[1].textContent != " " && LIST_HINH_VUONG[1].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[7].textContent === LIST_HINH_VUONG[1].textContent) ||
+        (LIST_HINH_VUONG[2].textContent != " " && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[5].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[2].textContent) ||
+        (LIST_HINH_VUONG[0].textContent != " " && LIST_HINH_VUONG[0].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[8].textContent === LIST_HINH_VUONG[0].textContent) ||
+        (LIST_HINH_VUONG[2].textContent != " " && LIST_HINH_VUONG[2].textContent === LIST_HINH_VUONG[4].textContent && LIST_HINH_VUONG[6].textContent === LIST_HINH_VUONG[2].textContent)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function DiChuyenBuocDiCuaAI(a) {
+    TrangThaiBanCo[a - 1] = "TTTTTTTTTTTTTTT";
+}
+function KiemTraGiaTriTonTaiADNBanCo(value) {
+    return TrangThaiBanCo.indexOf(value) !== -1;
+}
+function KiemTraGiaTriTrongBanCo(value) {
+    return (TrangThaiBanCo[value - 1] != "AAAAAAAAAAAAAAA");
+}
+
+// ! Lượt của AI (if else các ô trên bản cờ)
+function LuotCuaAI() {
+    check1();
+    check2();
+    check3();
+    check4();
+    check6();
+    check7();
+    check8();
+    check9();
+}
 function check1() {
     if (KiemTraGiaTriTrongBanCo(1)) return;
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62])) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[44])) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73])) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42])) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62])) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[44])) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73])) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42])) DiChuyenBuocDiCuaAI(1);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]))) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[83]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]))) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[23]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[83]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[23]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]))) DiChuyenBuocDiCuaAI(1);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]))) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]))) DiChuyenBuocDiCuaAI(1);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[23]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]))) DiChuyenBuocDiCuaAI(1);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[23]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]))) DiChuyenBuocDiCuaAI(1);
 }
 function check2() {
 
     if (KiemTraGiaTriTrongBanCo(2)) return;
 
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]))) DiChuyenBuocDiCuaAI(2);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13])) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[34])) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91])) DiChuyenBuocDiCuaAI(2);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61])) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13])) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[34])) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91])) DiChuyenBuocDiCuaAI(2);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61])) DiChuyenBuocDiCuaAI(2);
 }
 
 function check3() {
@@ -179,40 +194,40 @@ function check3() {
 
     if (KiemTraGiaTriTrongBanCo(3)) return;
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22])) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82])) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13])) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[24])) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22])) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82])) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13])) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[24])) DiChuyenBuocDiCuaAI(3);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[63]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]))) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]))) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[63]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11]))) DiChuyenBuocDiCuaAI(3);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[63]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]))) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[43]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]))) DiChuyenBuocDiCuaAI(3);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[63]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[43]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]))) DiChuyenBuocDiCuaAI(3);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]))) DiChuyenBuocDiCuaAI(3);
 }
 
 function check4() {
     if (KiemTraGiaTriTrongBanCo(4)) return;
 
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]))) DiChuyenBuocDiCuaAI(4);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73])) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[14])) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21])) DiChuyenBuocDiCuaAI(4);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31])) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73])) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[14])) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21])) DiChuyenBuocDiCuaAI(4);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31])) DiChuyenBuocDiCuaAI(4);
 }
 
 function check6() {
@@ -220,72 +235,72 @@ function check6() {
     if (KiemTraGiaTriTrongBanCo(6)) return;
 
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[21]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[21]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]))) DiChuyenBuocDiCuaAI(6);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[94])) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33])) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[71])) DiChuyenBuocDiCuaAI(6);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81])) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[94])) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33])) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[71])) DiChuyenBuocDiCuaAI(6);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81])) DiChuyenBuocDiCuaAI(6);
 }
 function check7() {
     if (KiemTraGiaTriTrongBanCo(7)) return;
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22])) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93])) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[84])) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82])) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22])) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93])) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[84])) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82])) DiChuyenBuocDiCuaAI(7);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[63]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]))) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]))) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[43]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[63]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[43]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41]))) DiChuyenBuocDiCuaAI(7);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]))) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[43]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]))) DiChuyenBuocDiCuaAI(7);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[43]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]))) DiChuyenBuocDiCuaAI(7);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]))) DiChuyenBuocDiCuaAI(7);
 }
 function check8() {
     if (KiemTraGiaTriTrongBanCo(8)) return;
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[91]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[91]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[92]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[72]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[32]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[61]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[12]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[92]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[72]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[32]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[61]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[12]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[82]))) DiChuyenBuocDiCuaAI(8);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[13]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[74])) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[93])) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[11])) DiChuyenBuocDiCuaAI(8);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[41])) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[13]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[74])) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[93])) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[11])) DiChuyenBuocDiCuaAI(8);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[41])) DiChuyenBuocDiCuaAI(8);
 }
 function check9() {
     if (KiemTraGiaTriTrongBanCo(9)) return;
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[64])) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[22]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33])) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62])) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]) && KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42])) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[64])) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[22]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33])) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62])) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]) && KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42])) DiChuyenBuocDiCuaAI(9);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[73]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]))) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[83]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]))) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[62]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[31]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[73]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[83]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[62]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[31]))) DiChuyenBuocDiCuaAI(9);
 
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[83]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]))) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[33]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]))) DiChuyenBuocDiCuaAI(9);
-    if (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[42]) && (KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[23]) || KiemTraGiaTriTonTaiDNABanCo(DNA_SEQUENCES[81]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[83]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[33]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]))) DiChuyenBuocDiCuaAI(9);
+    if (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[42]) && (KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[23]) || KiemTraGiaTriTonTaiADNBanCo(INPUT_ADN[81]))) DiChuyenBuocDiCuaAI(9);
 }
